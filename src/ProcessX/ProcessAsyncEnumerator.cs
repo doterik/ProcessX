@@ -32,25 +32,9 @@ internal class ProcessAsyncEnumerator : IAsyncEnumerator<string>
     public string Current => current;
 #pragma warning restore CS8603
 
-    public async ValueTask<bool> MoveNextAsync()
-    {
-        if (channel.TryRead(out current))
-        {
-            return true;
-        }
-        else
-        {
-            if (await channel.WaitToReadAsync(cancellationToken).ConfigureAwait(false))
-            {
-                if (channel.TryRead(out current))
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-    }
+    public async ValueTask<bool> MoveNextAsync() =>
+        channel.TryRead(out current) ||
+        (await channel.WaitToReadAsync(cancellationToken).ConfigureAwait(false) && channel.TryRead(out current));
 
     public ValueTask DisposeAsync()
     {
@@ -71,10 +55,7 @@ internal class ProcessAsyncEnumerator : IAsyncEnumerator<string>
             }
             finally
             {
-                if (process is not null)
-                {
-                    process.Dispose();
-                }
+                process?.Dispose();
             }
         }
 

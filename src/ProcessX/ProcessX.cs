@@ -6,7 +6,7 @@ namespace Cysharp.Diagnostics;
 
 public static class ProcessX
 {
-    public static IReadOnlyList<int> AcceptableExitCodes { get; set; } = new[] { 0 };
+    public static IReadOnlyList<int> AcceptableExitCodes { get; set; } = [0];
 
     private static bool IsInvalidExitCode(Process process) => !AcceptableExitCodes.Any(x => x == process.ExitCode);
 
@@ -19,8 +19,8 @@ public static class ProcessX
         }
         else
         {
-            var fileName = command.Substring(0, cmdBegin);
-            var arguments = command.Substring(cmdBegin + 1, command.Length - (cmdBegin + 1));
+            var fileName = command[..cmdBegin];
+            var arguments = command[(cmdBegin + 1)..];
             return (fileName, arguments);
         }
     }
@@ -82,7 +82,7 @@ public static class ProcessX
 
     public static ProcessAsyncEnumerable StartAsync(ProcessStartInfo processStartInfo)
     {
-        var process = SetupRedirectableProcess(ref processStartInfo, false);
+        var process = SetupRedirectableProcess(ref processStartInfo, redirectStandardInput: false);
 
         var outputChannel = Channel.CreateUnbounded<string>(new UnboundedChannelOptions
         {
@@ -140,7 +140,7 @@ public static class ProcessX
 
             if (IsInvalidExitCode(process))
             {
-                outputChannel.Writer.TryComplete(new ProcessErrorException(process.ExitCode, errorList.ToArray()));
+                outputChannel.Writer.TryComplete(new ProcessErrorException(process.ExitCode, [.. errorList]));
             }
             else
             {
@@ -150,7 +150,7 @@ public static class ProcessX
                 }
                 else
                 {
-                    outputChannel.Writer.TryComplete(new ProcessErrorException(process.ExitCode, errorList.ToArray()));
+                    outputChannel.Writer.TryComplete(new ProcessErrorException(process.ExitCode, [.. errorList]));
                 }
             }
         };
@@ -204,7 +204,7 @@ public static class ProcessX
 
     public static (Process Process, ProcessAsyncEnumerable StdOut, ProcessAsyncEnumerable StdError) GetDualAsyncEnumerable(ProcessStartInfo processStartInfo)
     {
-        var process = SetupRedirectableProcess(ref processStartInfo, true);
+        var process = SetupRedirectableProcess(ref processStartInfo, redirectStandardInput: true);
 
         var outputChannel = Channel.CreateUnbounded<string>(new UnboundedChannelOptions
         {
@@ -254,7 +254,7 @@ public static class ProcessX
             if (IsInvalidExitCode(process))
             {
                 errorChannel.Writer.TryComplete();
-                outputChannel.Writer.TryComplete(new ProcessErrorException(process.ExitCode, Array.Empty<string>()));
+                outputChannel.Writer.TryComplete(new ProcessErrorException(process.ExitCode, []));
             }
             else
             {
@@ -272,7 +272,7 @@ public static class ProcessX
         process.BeginErrorReadLine();
 
         // error itertor does not handle process itself.
-        return (process, new ProcessAsyncEnumerable(process, outputChannel.Reader), new ProcessAsyncEnumerable(null, errorChannel.Reader));
+        return (process, new ProcessAsyncEnumerable(process, outputChannel.Reader), new ProcessAsyncEnumerable(process: null, errorChannel.Reader));
     }
 
     // Binary
@@ -315,7 +315,7 @@ public static class ProcessX
 
     public static Task<byte[]> StartReadBinaryAsync(ProcessStartInfo processStartInfo)
     {
-        var process = SetupRedirectableProcess(ref processStartInfo, false);
+        var process = SetupRedirectableProcess(ref processStartInfo, redirectStandardInput: false);
 
         var errorList = new List<string>();
 
@@ -355,7 +355,7 @@ public static class ProcessX
 
             cts.Cancel();
 
-            resultTask.TrySetException(new ProcessErrorException(process.ExitCode, errorList.ToArray()));
+            resultTask.TrySetException(new ProcessErrorException(process.ExitCode, [.. errorList]));
         };
 
         if (!process.Start())

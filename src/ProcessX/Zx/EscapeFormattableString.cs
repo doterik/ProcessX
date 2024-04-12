@@ -5,7 +5,7 @@ internal static class EscapeFormattableString
     internal static string Escape(FormattableString formattableString)
     {
         // already escaped.
-        if (formattableString.Format.StartsWith("\"") && formattableString.Format.EndsWith("\""))
+        if (formattableString.Format.StartsWith('"') && formattableString.Format.EndsWith('"'))
         {
             return formattableString.ToString();
         }

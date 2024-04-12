@@ -8,7 +8,7 @@ public class ProcessErrorException : Exception
     public ProcessErrorException(int exitCode, string[] errorOutput)
         : base("Process returns error, ExitCode:" + exitCode + Environment.NewLine + string.Join(Environment.NewLine, errorOutput))
     {
-        this.ExitCode = exitCode;
-        this.ErrorOutput = errorOutput;
+        ExitCode = exitCode;
+        ErrorOutput = errorOutput;
     }
 }

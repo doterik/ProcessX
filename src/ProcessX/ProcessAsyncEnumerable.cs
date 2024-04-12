@@ -21,9 +21,7 @@ public class ProcessAsyncEnumerable : IAsyncEnumerable<string>
     /// </summary>
     public async Task WaitAsync(CancellationToken cancellationToken = default)
     {
-        await foreach (var _ in this.WithCancellation(cancellationToken).ConfigureAwait(false))
-        {
-        }
+        await foreach (var _ in this.WithCancellation(cancellationToken).ConfigureAwait(false)) { /*~*/ }
     }
 
     /// <summary>
@@ -34,20 +32,10 @@ public class ProcessAsyncEnumerable : IAsyncEnumerable<string>
         string? data = null;
         await foreach (var item in this.WithCancellation(cancellationToken).ConfigureAwait(false))
         {
-            if (data is null)
-            {
-                data = item ?? string.Empty;
-            }
+            data ??= item ?? string.Empty;
         }
 
-        if (data is null)
-        {
-            throw new InvalidOperationException("Process does not return any data.");
-        }
-        else
-        {
-            return data;
-        }
+        return data ?? throw new InvalidOperationException("Process does not return any data.");
     }
 
     /// <summary>
@@ -58,10 +46,7 @@ public class ProcessAsyncEnumerable : IAsyncEnumerable<string>
         string? data = null;
         await foreach (var item in this.WithCancellation(cancellationToken).ConfigureAwait(false))
         {
-            if (data is null)
-            {
-                data = item ?? string.Empty;
-            }
+            data ??= item ?? string.Empty;
         }
 
         return data;
@@ -75,7 +60,7 @@ public class ProcessAsyncEnumerable : IAsyncEnumerable<string>
             list.Add(item);
         }
 
-        return list.ToArray();
+        return [.. list];
     }
 
     /// <summary>

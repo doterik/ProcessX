@@ -13,24 +13,11 @@ public static class Env
     {
         get
         {
-            if (_shell is null)
-            {
-                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-                {
-                    _shell = "cmd /c";
-                }
-                else
-                {
-                    if (Which.TryGetPath("bash", out var bashPath))
-                    {
-                        _shell = bashPath + " -c";
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException("shell is not found in PATH, set Env.shell manually.");
-                    }
-                }
-            }
+            _shell ??= RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+                    ? "cmd /c"
+                    : Which.TryGetPath("bash", out var bashPath)
+                        ? bashPath + " -c"
+                        : throw new InvalidOperationException("shell is not found in PATH, set Env.shell manually.");
 
             return _shell;
         }
@@ -40,7 +27,7 @@ public static class Env
         }
     }
 
-    private static readonly Lazy<CancellationTokenSource> _terminateTokenSource = new Lazy<CancellationTokenSource>(() =>
+    private static readonly Lazy<CancellationTokenSource> _terminateTokenSource = new(() =>
     {
         var source = new CancellationTokenSource();
         Console.CancelKeyPress += (sender, e) => source.Cancel();
@@ -51,7 +38,7 @@ public static class Env
 
     public static string? workingDirectory { get; set; }
 
-    private static readonly Lazy<IDictionary<string, string>> _envVars = new Lazy<IDictionary<string, string>>(() =>
+    private static readonly Lazy<IDictionary<string, string>> _envVars = new(() =>
     {
         return new Dictionary<string, string>();
     });
@@ -70,34 +57,26 @@ public static class Env
 
     public static async Task<string> withTimeout(FormattableString command, int seconds)
     {
-        using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(seconds)))
-        {
-            return (await ProcessStartAsync(EscapeFormattableString.Escape(command), cts.Token)).StdOut;
-        }
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(seconds));
+        return (await ProcessStartAsync(EscapeFormattableString.Escape(command), cts.Token)).StdOut;
     }
 
     public static async Task<(string StdOut, string StdError)> withTimeout2(FormattableString command, int seconds)
     {
-        using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(seconds)))
-        {
-            return await ProcessStartAsync(EscapeFormattableString.Escape(command), cts.Token);
-        }
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(seconds));
+        return await ProcessStartAsync(EscapeFormattableString.Escape(command), cts.Token);
     }
 
     public static async Task<string> withTimeout(FormattableString command, TimeSpan timeSpan)
     {
-        using (var cts = new CancellationTokenSource(timeSpan))
-        {
-            return (await ProcessStartAsync(EscapeFormattableString.Escape(command), cts.Token)).StdOut;
-        }
+        using var cts = new CancellationTokenSource(timeSpan);
+        return (await ProcessStartAsync(EscapeFormattableString.Escape(command), cts.Token)).StdOut;
     }
 
     public static async Task<(string StdOut, string StdError)> withTimeout2(FormattableString command, TimeSpan timeSpan)
     {
-        using (var cts = new CancellationTokenSource(timeSpan))
-        {
-            return await ProcessStartAsync(EscapeFormattableString.Escape(command), cts.Token);
-        }
+        using var cts = new CancellationTokenSource(timeSpan);
+        return await ProcessStartAsync(EscapeFormattableString.Escape(command), cts.Token);
     }
 
     public static async Task<string> withCancellation(FormattableString command, CancellationToken cancellationToken) => (await ProcessStartAsync(EscapeFormattableString.Escape(command), cancellationToken)).StdOut;
@@ -130,7 +109,7 @@ public static class Env
         }
         catch (ProcessErrorException)
         {
-            return default(T)!;
+            return default!;
         }
     }
 

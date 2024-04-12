@@ -17,15 +17,7 @@ public static class StringProcessExtensions
         return ProcessCommands().GetAwaiter();
     }
 
-    private static Task<string> ProcessCommand(string command)
-    {
-        if (TryChangeDirectory(command))
-        {
-            return Task.FromResult(string.Empty);
-        }
-
-        return Env.process(command);
-    }
+    private static Task<string> ProcessCommand(string command) => TryChangeDirectory(command) ? Task.FromResult(string.Empty) : Env.process(command);
 
     private static bool TryChangeDirectory(string command)
     {

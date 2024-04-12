@@ -23,7 +23,7 @@ internal static class Which
             // /path/to/foo.ext
             foreach (var ext in pathExts)
             {
-                var fullPath = Path.Combine(path, $"{commandName}{ext}");
+                var fullPath = Path.Combine(path, commandName + ext);
                 if (File.Exists(fullPath))
                 {
                     matchedPath = fullPath;
