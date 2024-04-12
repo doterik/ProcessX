@@ -7,7 +7,6 @@ namespace ProcessX.Tests
         [Fact]
         public void Test1()
         {
-
         }
     }
 }

@@ -31,6 +31,7 @@ public static class Env
                     }
                 }
             }
+
             return _shell;
         }
         set
@@ -79,7 +80,7 @@ public static class Env
     {
         using (var cts = new CancellationTokenSource(TimeSpan.FromSeconds(seconds)))
         {
-            return (await ProcessStartAsync(EscapeFormattableString.Escape(command), cts.Token));
+            return await ProcessStartAsync(EscapeFormattableString.Escape(command), cts.Token);
         }
     }
 
@@ -95,13 +96,13 @@ public static class Env
     {
         using (var cts = new CancellationTokenSource(timeSpan))
         {
-            return (await ProcessStartAsync(EscapeFormattableString.Escape(command), cts.Token));
+            return await ProcessStartAsync(EscapeFormattableString.Escape(command), cts.Token);
         }
     }
 
     public static async Task<string> withCancellation(FormattableString command, CancellationToken cancellationToken) => (await ProcessStartAsync(EscapeFormattableString.Escape(command), cancellationToken)).StdOut;
 
-    public static async Task<(string StdOut, string StdError)> withCancellation2(FormattableString command, CancellationToken cancellationToken) => (await ProcessStartAsync(EscapeFormattableString.Escape(command), cancellationToken));
+    public static async Task<(string StdOut, string StdError)> withCancellation2(FormattableString command, CancellationToken cancellationToken) => await ProcessStartAsync(EscapeFormattableString.Escape(command), cancellationToken);
 
     public static Task<string> run(FormattableString command, CancellationToken cancellationToken = default) => process(EscapeFormattableString.Escape(command), cancellationToken);
 
@@ -206,6 +207,7 @@ public static class Env
                 {
                     isFirst = false;
                 }
+
                 sbError.Append(item);
 
                 if (verbose && !forceSilcent)

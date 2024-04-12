@@ -47,6 +47,7 @@ internal class ProcessAsyncEnumerator : IAsyncEnumerator<string>
                     return true;
                 }
             }
+
             return false;
         }
     }
