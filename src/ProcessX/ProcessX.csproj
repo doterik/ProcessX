@@ -1,12 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFrameworks>netstandard2.0;netstandard2.1</TargetFrameworks>
-        <LangVersion>8.0</LangVersion>
+        <TargetFramework>net9.0</TargetFramework>
+        <LangVersion>preview</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    </PropertyGroup>
+
+    <PropertyGroup>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <NoWarn>$(NoWarn);CS1591</NoWarn>
+        <!--<NoWarn>$(NoWarn);CS1591</NoWarn>-->
 
         <!-- NuGet Packaging -->
         <PackageVersion>$(Version)</PackageVersion>
@@ -21,12 +25,9 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <IsPackable>true</IsPackable>
     </PropertyGroup>
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0'">
-        <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="1.1.0" />
-    </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.Threading.Channels" Version="4.7.0" />
+        <PackageReference Include="System.Threading.Channels" Version="9.0.0-preview.4.24212.5" />
     </ItemGroup>
 
 </Project>
