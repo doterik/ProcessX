@@ -21,7 +21,7 @@ public static class StringProcessExtensions
     {
         if (TryChangeDirectory(command))
         {
-            return Task.FromResult("");
+            return Task.FromResult(string.Empty);
         }
 
         return Env.process(command);
@@ -31,7 +31,7 @@ public static class StringProcessExtensions
     {
         if (command.StartsWith("cd ") || command.StartsWith("chdir "))
         {
-            var path = Regex.Replace(command, "^cd|^chdir", "").Trim();
+            var path = Regex.Replace(command, "^cd|^chdir", string.Empty).Trim();
             Environment.CurrentDirectory = Path.Combine(Environment.CurrentDirectory, path);
             return true;
         }

@@ -36,7 +36,7 @@ public class ProcessAsyncEnumerable : IAsyncEnumerable<string>
         {
             if (data is null)
             {
-                data = (item ?? "");
+                data = (item ?? string.Empty);
             }
         }
 
@@ -60,7 +60,7 @@ public class ProcessAsyncEnumerable : IAsyncEnumerable<string>
         {
             if (data is null)
             {
-                data = (item ?? "");
+                data = (item ?? string.Empty);
             }
         }
         return data;

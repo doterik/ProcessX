@@ -137,7 +137,7 @@ public static class Env
     {
         Console.WriteLine(question);
         var str = await Console.In.ReadLineAsync();
-        return str ?? "";
+        return str ?? string.Empty;
     }
 
     public static void log(object? value, ConsoleColor? color = default)
