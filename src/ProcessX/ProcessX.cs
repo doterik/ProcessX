@@ -8,12 +8,12 @@ public static class ProcessX
 {
     public static IReadOnlyList<int> AcceptableExitCodes { get; set; } = new[] { 0 };
 
-    static bool IsInvalidExitCode(Process process)
+    private static bool IsInvalidExitCode(Process process)
     {
         return !AcceptableExitCodes.Any(x => x == process.ExitCode);
     }
 
-    static (string fileName, string? arguments) ParseCommand(string command)
+    private static (string fileName, string? arguments) ParseCommand(string command)
     {
         var cmdBegin = command.IndexOf(' ');
         if (cmdBegin == -1)
@@ -28,7 +28,7 @@ public static class ProcessX
         }
     }
 
-    static Process SetupRedirectableProcess(ref ProcessStartInfo processStartInfo, bool redirectStandardInput)
+    private static Process SetupRedirectableProcess(ref ProcessStartInfo processStartInfo, bool redirectStandardInput)
     {
         // override setings.
         processStartInfo.UseShellExecute = false;
@@ -372,7 +372,7 @@ public static class ProcessX
         return resultTask.Task;
     }
 
-    static async void RunAsyncReadFully(Stream stream, TaskCompletionSource<byte[]?> completion, CancellationToken cancellationToken)
+    private static async void RunAsyncReadFully(Stream stream, TaskCompletionSource<byte[]?> completion, CancellationToken cancellationToken)
     {
         try
         {

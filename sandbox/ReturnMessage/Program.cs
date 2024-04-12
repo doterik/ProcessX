@@ -4,7 +4,7 @@ namespace ReturnMessage;
 
 public class Program : ConsoleAppBase
 {
-    static async Task Main(string[] args)
+    private static async Task Main(string[] args)
     {
         await Host.CreateDefaultBuilder().RunConsoleAppFrameworkAsync<Program>(args);
     }

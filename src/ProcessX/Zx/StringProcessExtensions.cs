@@ -20,7 +20,7 @@ public static class StringProcessExtensions
         return ProcessCommands().GetAwaiter();
     }
 
-    static Task<string> ProcessCommand(string command)
+    private static Task<string> ProcessCommand(string command)
     {
         if (TryChangeDirectory(command))
         {
@@ -30,7 +30,7 @@ public static class StringProcessExtensions
         return Env.process(command);
     }
 
-    static bool TryChangeDirectory(string command)
+    private static bool TryChangeDirectory(string command)
     {
         if (command.StartsWith("cd ") || command.StartsWith("chdir "))
         {

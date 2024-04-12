@@ -8,7 +8,7 @@ public static class Env
 {
     public static bool verbose { get; set; } = true;
 
-    static string? _shell;
+    private static string? _shell;
     public static string shell
     {
         get
@@ -39,7 +39,7 @@ public static class Env
         }
     }
 
-    static readonly Lazy<CancellationTokenSource> _terminateTokenSource = new Lazy<CancellationTokenSource>(() =>
+    private static readonly Lazy<CancellationTokenSource> _terminateTokenSource = new Lazy<CancellationTokenSource>(() =>
     {
         var source = new CancellationTokenSource();
         Console.CancelKeyPress += (sender, e) => source.Cancel();
@@ -50,7 +50,7 @@ public static class Env
 
     public static string? workingDirectory { get; set; }
 
-    static readonly Lazy<IDictionary<string, string>> _envVars = new Lazy<IDictionary<string, string>>(() =>
+    private static readonly Lazy<IDictionary<string, string>> _envVars = new Lazy<IDictionary<string, string>>(() =>
     {
         return new Dictionary<string, string>();
     });
@@ -210,7 +210,7 @@ public static class Env
         return new ColorScope(current);
     }
 
-    static async Task<(string StdOut, string StdError)> ProcessStartAsync(string command, CancellationToken cancellationToken, bool forceSilcent = false)
+    private static async Task<(string StdOut, string StdError)> ProcessStartAsync(string command, CancellationToken cancellationToken, bool forceSilcent = false)
     {
         var cmd = shell + " \"" + command + "\"";
         var sbOut = new StringBuilder();
@@ -268,7 +268,7 @@ public static class Env
         return (sbOut.ToString(), sbError.ToString());
     }
 
-    static async Task<(string[] StdOut, string[] StdError)> ProcessStartListAsync(string command, CancellationToken cancellationToken, bool forceSilcent = false)
+    private static async Task<(string[] StdOut, string[] StdError)> ProcessStartListAsync(string command, CancellationToken cancellationToken, bool forceSilcent = false)
     {
         var cmd = shell + " \"" + command + "\"";
         var sbOut = new List<string>();
@@ -307,9 +307,9 @@ public static class Env
         return (sbOut.ToArray(), sbError.ToArray());
     }
 
-    class ColorScope : IDisposable
+    private class ColorScope : IDisposable
     {
-        readonly ConsoleColor color;
+        private readonly ConsoleColor color;
 
         public ColorScope(ConsoleColor color)
         {

@@ -3,14 +3,14 @@ using System.Threading.Channels;
 
 namespace Cysharp.Diagnostics;
 
-class ProcessAsyncEnumerator : IAsyncEnumerator<string>
+internal class ProcessAsyncEnumerator : IAsyncEnumerator<string>
 {
-    readonly Process? process;
-    readonly ChannelReader<string> channel;
-    readonly CancellationToken cancellationToken;
-    readonly CancellationTokenRegistration cancellationTokenRegistration;
-    string? current;
-    bool disposed;
+    private readonly Process? process;
+    private readonly ChannelReader<string> channel;
+    private readonly CancellationToken cancellationToken;
+    private readonly CancellationTokenRegistration cancellationTokenRegistration;
+    private string? current;
+    private bool disposed;
 
     public ProcessAsyncEnumerator(Process? process, ChannelReader<string> channel, CancellationToken cancellationToken)
     {
