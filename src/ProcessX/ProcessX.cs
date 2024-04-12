@@ -61,12 +61,12 @@ public static class ProcessX
             Arguments = arguments,
         };
 
-        if (workingDirectory != null)
+        if (workingDirectory is not null)
         {
             pi.WorkingDirectory = workingDirectory;
         }
 
-        if (environmentVariable != null)
+        if (environmentVariable is not null)
         {
             foreach (var item in environmentVariable)
             {
@@ -74,7 +74,7 @@ public static class ProcessX
             }
         }
 
-        if (encoding != null)
+        if (encoding is not null)
         {
             pi.StandardOutputEncoding = encoding;
             pi.StandardErrorEncoding = encoding;
@@ -100,7 +100,7 @@ public static class ProcessX
 
         void OnOutputDataReceived(object sender, DataReceivedEventArgs e)
         {
-            if (e.Data != null)
+            if (e.Data is not null)
             {
                 outputChannel?.Writer.TryWrite(e.Data);
             }
@@ -115,7 +115,7 @@ public static class ProcessX
         var waitErrorDataCompleted = new TaskCompletionSource<object?>();
         process.ErrorDataReceived += (sender, e) =>
         {
-            if (e.Data != null)
+            if (e.Data is not null)
             {
                 lock (errorList)
                 {
@@ -132,7 +132,7 @@ public static class ProcessX
         {
             await waitErrorDataCompleted.Task.ConfigureAwait(false);
 
-            if (errorList.Count == 0)
+            if (errorList.Count is 0)
             {
                 await waitOutputDataCompleted.Task.ConfigureAwait(false);
             }
@@ -147,7 +147,7 @@ public static class ProcessX
             }
             else
             {
-                if (errorList.Count == 0)
+                if (errorList.Count is 0)
                 {
                     outputChannel.Writer.TryComplete();
                 }
@@ -183,12 +183,12 @@ public static class ProcessX
             Arguments = arguments,
         };
 
-        if (workingDirectory != null)
+        if (workingDirectory is not null)
         {
             pi.WorkingDirectory = workingDirectory;
         }
 
-        if (environmentVariable != null)
+        if (environmentVariable is not null)
         {
             foreach (var item in environmentVariable)
             {
@@ -196,7 +196,7 @@ public static class ProcessX
             }
         }
 
-        if (encoding != null)
+        if (encoding is not null)
         {
             pi.StandardOutputEncoding = encoding;
             pi.StandardErrorEncoding = encoding;
@@ -226,7 +226,7 @@ public static class ProcessX
         var waitOutputDataCompleted = new TaskCompletionSource<object?>();
         process.OutputDataReceived += (sender, e) =>
         {
-            if (e.Data != null)
+            if (e.Data is not null)
             {
                 outputChannel.Writer.TryWrite(e.Data);
             }
@@ -239,7 +239,7 @@ public static class ProcessX
         var waitErrorDataCompleted = new TaskCompletionSource<object?>();
         process.ErrorDataReceived += (sender, e) =>
         {
-            if (e.Data != null)
+            if (e.Data is not null)
             {
                 errorChannel.Writer.TryWrite(e.Data);
             }
@@ -294,12 +294,12 @@ public static class ProcessX
             Arguments = arguments,
         };
 
-        if (workingDirectory != null)
+        if (workingDirectory is not null)
         {
             pi.WorkingDirectory = workingDirectory;
         }
 
-        if (environmentVariable != null)
+        if (environmentVariable is not null)
         {
             foreach (var item in environmentVariable)
             {
@@ -307,7 +307,7 @@ public static class ProcessX
             }
         }
 
-        if (encoding != null)
+        if (encoding is not null)
         {
             pi.StandardOutputEncoding = encoding;
             pi.StandardErrorEncoding = encoding;
@@ -329,7 +329,7 @@ public static class ProcessX
         var waitErrorDataCompleted = new TaskCompletionSource<object?>();
         process.ErrorDataReceived += (sender, e) =>
         {
-            if (e.Data != null)
+            if (e.Data is not null)
             {
                 lock (errorList)
                 {
@@ -346,10 +346,10 @@ public static class ProcessX
         {
             await waitErrorDataCompleted.Task.ConfigureAwait(false);
 
-            if (errorList.Count == 0 && !IsInvalidExitCode(process))
+            if (errorList.Count is 0 && !IsInvalidExitCode(process))
             {
                 var resultBin = await readTask.Task.ConfigureAwait(false);
-                if (resultBin != null)
+                if (resultBin is not null)
                 {
                     resultTask.TrySetResult(resultBin);
                     return;

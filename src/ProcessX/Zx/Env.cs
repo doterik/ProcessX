@@ -13,7 +13,7 @@ public static class Env
     {
         get
         {
-            if (_shell == null)
+            if (_shell is null)
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
@@ -190,7 +190,7 @@ public static class Env
 
     public static void log(object? value, ConsoleColor? color = default)
     {
-        if (color != null)
+        if (color is not null)
         {
             using (Env.color(color.Value))
             {

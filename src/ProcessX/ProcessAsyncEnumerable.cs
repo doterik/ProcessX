@@ -37,13 +37,13 @@ public class ProcessAsyncEnumerable : IAsyncEnumerable<string>
         string? data = null;
         await foreach (var item in this.WithCancellation(cancellationToken).ConfigureAwait(false))
         {
-            if (data == null)
+            if (data is null)
             {
                 data = (item ?? "");
             }
         }
 
-        if (data == null)
+        if (data is null)
         {
             throw new InvalidOperationException("Process does not return any data.");
         }
@@ -61,7 +61,7 @@ public class ProcessAsyncEnumerable : IAsyncEnumerable<string>
         string? data = null;
         await foreach (var item in this.WithCancellation(cancellationToken).ConfigureAwait(false))
         {
-            if (data == null)
+            if (data is null)
             {
                 data = (item ?? "");
             }

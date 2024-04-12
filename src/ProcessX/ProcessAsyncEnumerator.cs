@@ -59,7 +59,7 @@ internal class ProcessAsyncEnumerator : IAsyncEnumerator<string>
             try
             {
                 cancellationTokenRegistration.Dispose();
-                if (process != null)
+                if (process is not null)
                 {
                     process.EnableRaisingEvents = false;
                     if (!process.HasExited)
@@ -70,7 +70,7 @@ internal class ProcessAsyncEnumerator : IAsyncEnumerator<string>
             }
             finally
             {
-                if (process != null)
+                if (process is not null)
                 {
                     process.Dispose();
                 }
