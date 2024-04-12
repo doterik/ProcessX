@@ -13,7 +13,7 @@ internal static class EscapeFormattableString
         // GetArguments returns inner object[] field, it can modify.
         var args = formattableString.GetArguments();
 
-        for (int i = 0; i < args.Length; i++)
+        for (var i = 0; i < args.Length; i++)
         {
             if (args[i] is string)
             {

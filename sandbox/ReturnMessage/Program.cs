@@ -12,7 +12,7 @@ public class Program : ConsoleAppBase
     [Command("str")]
     public void StringWrite([Option("m")]string echoMesage, [Option("c")]int repeatCount)
     {
-        for (int i = 0; i < repeatCount; i++)
+        for (var i = 0; i < repeatCount; i++)
         {
             Console.WriteLine(echoMesage);
         }
@@ -22,7 +22,7 @@ public class Program : ConsoleAppBase
     public async Task BinaryWrite([Option("s")]int writeSize, [Option("c")]int repeatCount, [Option("w")]int waitMilliseconds)
     {
         var stdOut = Console.OpenStandardOutput();
-        for (int i = 0; i < repeatCount; i++)
+        for (var i = 0; i < repeatCount; i++)
         {
             var bin = new byte[writeSize];
             Array.Fill<byte>(bin, unchecked((byte)(i + 1)));
