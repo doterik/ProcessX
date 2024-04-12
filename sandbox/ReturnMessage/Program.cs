@@ -4,10 +4,7 @@ namespace ReturnMessage;
 
 public class Program : ConsoleAppBase
 {
-    private static async Task Main(string[] args)
-    {
-        await Host.CreateDefaultBuilder().RunConsoleAppFrameworkAsync<Program>(args);
-    }
+    private static async Task Main(string[] args) => await Host.CreateDefaultBuilder().RunConsoleAppFrameworkAsync<Program>(args);
 
     [Command("str")]
     public void StringWrite([Option("m")]string echoMesage, [Option("c")]int repeatCount)

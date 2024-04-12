@@ -57,30 +57,15 @@ public static class Env
 
     public static IDictionary<string, string> envVars => _envVars.Value;
 
-    public static Task<HttpResponseMessage> fetch(string requestUri)
-    {
-        return new HttpClient().GetAsync(requestUri);
-    }
+    public static Task<HttpResponseMessage> fetch(string requestUri) => new HttpClient().GetAsync(requestUri);
 
-    public static Task<string> fetchText(string requestUri)
-    {
-        return new HttpClient().GetStringAsync(requestUri);
-    }
+    public static Task<string> fetchText(string requestUri) => new HttpClient().GetStringAsync(requestUri);
 
-    public static Task<byte[]> fetchBytes(string requestUri)
-    {
-        return new HttpClient().GetByteArrayAsync(requestUri);
-    }
+    public static Task<byte[]> fetchBytes(string requestUri) => new HttpClient().GetByteArrayAsync(requestUri);
 
-    public static Task sleep(int seconds, CancellationToken cancellationToken = default)
-    {
-        return Task.Delay(TimeSpan.FromSeconds(seconds), cancellationToken);
-    }
+    public static Task sleep(int seconds, CancellationToken cancellationToken = default) => Task.Delay(TimeSpan.FromSeconds(seconds), cancellationToken);
 
-    public static Task sleep(TimeSpan timeSpan, CancellationToken cancellationToken = default)
-    {
-        return Task.Delay(timeSpan, cancellationToken);
-    }
+    public static Task sleep(TimeSpan timeSpan, CancellationToken cancellationToken = default) => Task.Delay(timeSpan, cancellationToken);
 
     public static async Task<string> withTimeout(FormattableString command, int seconds)
     {
@@ -114,60 +99,27 @@ public static class Env
         }
     }
 
-    public static async Task<string> withCancellation(FormattableString command, CancellationToken cancellationToken)
-    {
-        return (await ProcessStartAsync(EscapeFormattableString.Escape(command), cancellationToken)).StdOut;
-    }
+    public static async Task<string> withCancellation(FormattableString command, CancellationToken cancellationToken) => (await ProcessStartAsync(EscapeFormattableString.Escape(command), cancellationToken)).StdOut;
 
-    public static async Task<(string StdOut, string StdError)> withCancellation2(FormattableString command, CancellationToken cancellationToken)
-    {
-        return (await ProcessStartAsync(EscapeFormattableString.Escape(command), cancellationToken));
-    }
+    public static async Task<(string StdOut, string StdError)> withCancellation2(FormattableString command, CancellationToken cancellationToken) => (await ProcessStartAsync(EscapeFormattableString.Escape(command), cancellationToken));
 
-    public static Task<string> run(FormattableString command, CancellationToken cancellationToken = default)
-    {
-        return process(EscapeFormattableString.Escape(command), cancellationToken);
-    }
+    public static Task<string> run(FormattableString command, CancellationToken cancellationToken = default) => process(EscapeFormattableString.Escape(command), cancellationToken);
 
-    public static Task<(string StdOut, string StdError)> run2(FormattableString command, CancellationToken cancellationToken = default)
-    {
-        return process2(EscapeFormattableString.Escape(command), cancellationToken);
-    }
+    public static Task<(string StdOut, string StdError)> run2(FormattableString command, CancellationToken cancellationToken = default) => process2(EscapeFormattableString.Escape(command), cancellationToken);
 
-    public static Task<string[]> runl(FormattableString command, CancellationToken cancellationToken = default)
-    {
-        return processl(EscapeFormattableString.Escape(command), cancellationToken);
-    }
+    public static Task<string[]> runl(FormattableString command, CancellationToken cancellationToken = default) => processl(EscapeFormattableString.Escape(command), cancellationToken);
 
-    public static Task<(string[] StdOut, string[] StdError)> runl2(FormattableString command, CancellationToken cancellationToken = default)
-    {
-        return processl2(EscapeFormattableString.Escape(command), cancellationToken);
-    }
+    public static Task<(string[] StdOut, string[] StdError)> runl2(FormattableString command, CancellationToken cancellationToken = default) => processl2(EscapeFormattableString.Escape(command), cancellationToken);
 
-    public static string escape(FormattableString command)
-    {
-        return EscapeFormattableString.Escape(command);
-    }
+    public static string escape(FormattableString command) => EscapeFormattableString.Escape(command);
 
-    public static async Task<string> process(string command, CancellationToken cancellationToken = default)
-    {
-        return (await ProcessStartAsync(command, cancellationToken)).StdOut;
-    }
+    public static async Task<string> process(string command, CancellationToken cancellationToken = default) => (await ProcessStartAsync(command, cancellationToken)).StdOut;
 
-    public static async Task<(string StdOut, string StdError)> process2(string command, CancellationToken cancellationToken = default)
-    {
-        return await ProcessStartAsync(command, cancellationToken);
-    }
+    public static async Task<(string StdOut, string StdError)> process2(string command, CancellationToken cancellationToken = default) => await ProcessStartAsync(command, cancellationToken);
 
-    public static async Task<string[]> processl(string command, CancellationToken cancellationToken = default)
-    {
-        return (await ProcessStartListAsync(command, cancellationToken)).StdOut;
-    }
+    public static async Task<string[]> processl(string command, CancellationToken cancellationToken = default) => (await ProcessStartListAsync(command, cancellationToken)).StdOut;
 
-    public static async Task<(string[] StdOut, string[] StdError)> processl2(string command, CancellationToken cancellationToken = default)
-    {
-        return await ProcessStartListAsync(command, cancellationToken);
-    }
+    public static async Task<(string[] StdOut, string[] StdError)> processl2(string command, CancellationToken cancellationToken = default) => await ProcessStartListAsync(command, cancellationToken);
 
     public static async Task<T> ignore<T>(Task<T> task)
     {
@@ -316,9 +268,6 @@ public static class Env
             this.color = color;
         }
 
-        public void Dispose()
-        {
-            Console.ForegroundColor = color;
-        }
+        public void Dispose() => Console.ForegroundColor = color;
     }
 }

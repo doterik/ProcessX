@@ -5,10 +5,7 @@ namespace Zx;
 
 public static class StringProcessExtensions
 {
-    public static TaskAwaiter<string> GetAwaiter(this string command)
-    {
-        return ProcessCommand(command).GetAwaiter();
-    }
+    public static TaskAwaiter<string> GetAwaiter(this string command) => ProcessCommand(command).GetAwaiter();
 
     public static TaskAwaiter GetAwaiter(this string[] commands)
     {

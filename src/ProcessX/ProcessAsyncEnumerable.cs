@@ -14,10 +14,7 @@ public class ProcessAsyncEnumerable : IAsyncEnumerable<string>
         this.channel = channel;
     }
 
-    public IAsyncEnumerator<string> GetAsyncEnumerator(CancellationToken cancellationToken = default)
-    {
-        return new ProcessAsyncEnumerator(process, channel, cancellationToken);
-    }
+    public IAsyncEnumerator<string> GetAsyncEnumerator(CancellationToken cancellationToken = default) => new ProcessAsyncEnumerator(process, channel, cancellationToken);
 
     /// <summary>
     /// Consume all result and wait complete asynchronously.

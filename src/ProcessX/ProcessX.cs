@@ -8,10 +8,7 @@ public static class ProcessX
 {
     public static IReadOnlyList<int> AcceptableExitCodes { get; set; } = new[] { 0 };
 
-    private static bool IsInvalidExitCode(Process process)
-    {
-        return !AcceptableExitCodes.Any(x => x == process.ExitCode);
-    }
+    private static bool IsInvalidExitCode(Process process) => !AcceptableExitCodes.Any(x => x == process.ExitCode);
 
     private static (string fileName, string? arguments) ParseCommand(string command)
     {
