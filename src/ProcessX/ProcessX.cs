@@ -95,17 +95,7 @@ public static class ProcessX
 
         var waitOutputDataCompleted = new TaskCompletionSource<object?>();
 
-        void OnOutputDataReceived(object sender, DataReceivedEventArgs e)
-        {
-            if (e.Data is not null)
-            {
-                outputChannel?.Writer.TryWrite(e.Data);
-            }
-            else
-            {
-                waitOutputDataCompleted?.TrySetResult(null);
-            }
-        }
+        void OnOutputDataReceived(object sender, DataReceivedEventArgs e) => _ = e.Data is not null ? outputChannel?.Writer.TryWrite(e.Data) : waitOutputDataCompleted?.TrySetResult(null);
 
         process.OutputDataReceived += OnOutputDataReceived;
 
@@ -121,38 +111,28 @@ public static class ProcessX
             }
             else
             {
-                waitErrorDataCompleted.TrySetResult(null);
+                _ = waitErrorDataCompleted.TrySetResult(null);
             }
         };
 
         process.Exited += async (sender, e) =>
         {
-            await waitErrorDataCompleted.Task.ConfigureAwait(false);
+            _ = await waitErrorDataCompleted.Task.ConfigureAwait(false);
 
             if (errorList.Count is 0)
             {
-                await waitOutputDataCompleted.Task.ConfigureAwait(false);
+                _ = await waitOutputDataCompleted.Task.ConfigureAwait(false);
             }
             else
             {
                 process.OutputDataReceived -= OnOutputDataReceived;
             }
 
-            if (IsInvalidExitCode(process))
-            {
-                outputChannel.Writer.TryComplete(new ProcessErrorException(process.ExitCode, [.. errorList]));
-            }
-            else
-            {
-                if (errorList.Count is 0)
-                {
-                    outputChannel.Writer.TryComplete();
-                }
-                else
-                {
-                    outputChannel.Writer.TryComplete(new ProcessErrorException(process.ExitCode, [.. errorList]));
-                }
-            }
+            _ = IsInvalidExitCode(process)
+                ? outputChannel.Writer.TryComplete(new ProcessErrorException(process.ExitCode, [.. errorList]))
+                : errorList.Count is 0
+                    ? outputChannel.Writer.TryComplete()
+                    : outputChannel.Writer.TryComplete(new ProcessErrorException(process.ExitCode, [.. errorList]));
         };
 
         if (!process.Start())
@@ -221,45 +201,25 @@ public static class ProcessX
         });
 
         var waitOutputDataCompleted = new TaskCompletionSource<object?>();
-        process.OutputDataReceived += (sender, e) =>
-        {
-            if (e.Data is not null)
-            {
-                outputChannel.Writer.TryWrite(e.Data);
-            }
-            else
-            {
-                waitOutputDataCompleted.TrySetResult(null);
-            }
-        };
+        process.OutputDataReceived += (sender, e) => _ = e.Data is not null ? outputChannel.Writer.TryWrite(e.Data) : waitOutputDataCompleted.TrySetResult(null);
 
         var waitErrorDataCompleted = new TaskCompletionSource<object?>();
-        process.ErrorDataReceived += (sender, e) =>
-        {
-            if (e.Data is not null)
-            {
-                errorChannel.Writer.TryWrite(e.Data);
-            }
-            else
-            {
-                waitErrorDataCompleted.TrySetResult(null);
-            }
-        };
+        process.ErrorDataReceived += (sender, e) => _ = e.Data is not null ? errorChannel.Writer.TryWrite(e.Data) : waitErrorDataCompleted.TrySetResult(null);
 
         process.Exited += async (sender, e) =>
         {
-            await waitErrorDataCompleted.Task.ConfigureAwait(false);
-            await waitOutputDataCompleted.Task.ConfigureAwait(false);
+            _ = await waitErrorDataCompleted.Task.ConfigureAwait(false);
+            _ = await waitOutputDataCompleted.Task.ConfigureAwait(false);
 
             if (IsInvalidExitCode(process))
             {
-                errorChannel.Writer.TryComplete();
-                outputChannel.Writer.TryComplete(new ProcessErrorException(process.ExitCode, []));
+                _ = errorChannel.Writer.TryComplete();
+                _ = outputChannel.Writer.TryComplete(new ProcessErrorException(process.ExitCode, []));
             }
             else
             {
-                errorChannel.Writer.TryComplete();
-                outputChannel.Writer.TryComplete();
+                _ = errorChannel.Writer.TryComplete();
+                _ = outputChannel.Writer.TryComplete();
             }
         };
 
@@ -335,27 +295,27 @@ public static class ProcessX
             }
             else
             {
-                waitErrorDataCompleted.TrySetResult(null);
+                _ = waitErrorDataCompleted.TrySetResult(null);
             }
         };
 
         process.Exited += async (sender, e) =>
         {
-            await waitErrorDataCompleted.Task.ConfigureAwait(false);
+            _ = await waitErrorDataCompleted.Task.ConfigureAwait(false);
 
             if (errorList.Count is 0 && !IsInvalidExitCode(process))
             {
                 var resultBin = await readTask.Task.ConfigureAwait(false);
                 if (resultBin is not null)
                 {
-                    resultTask.TrySetResult(resultBin);
+                    _ = resultTask.TrySetResult(resultBin);
                     return;
                 }
             }
 
             cts.Cancel();
 
-            resultTask.TrySetException(new ProcessErrorException(process.ExitCode, [.. errorList]));
+            _ = resultTask.TrySetException(new ProcessErrorException(process.ExitCode, [.. errorList]));
         };
 
         if (!process.Start())
@@ -376,11 +336,11 @@ public static class ProcessX
             var ms = new MemoryStream();
             await stream.CopyToAsync(ms, 81920, cancellationToken);
             var result = ms.ToArray();
-            completion.TrySetResult(result);
+            _ = completion.TrySetResult(result);
         }
         catch
         {
-            completion.TrySetResult(null);
+            _ = completion.TrySetResult(null);
         }
     }
 }

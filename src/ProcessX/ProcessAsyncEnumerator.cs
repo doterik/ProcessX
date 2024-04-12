@@ -20,10 +20,7 @@ internal class ProcessAsyncEnumerator : IAsyncEnumerator<string>
         this.cancellationToken = cancellationToken;
         if (cancellationToken.CanBeCanceled)
         {
-            cancellationTokenRegistration = cancellationToken.Register(() =>
-            {
-                _ = DisposeAsync();
-            });
+            cancellationTokenRegistration = cancellationToken.Register(() => _ = DisposeAsync());
         }
     }
 

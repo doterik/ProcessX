@@ -21,10 +21,7 @@ public static class Env
 
             return _shell;
         }
-        set
-        {
-            _shell = value;
-        }
+        set => _shell = value;
     }
 
     private static readonly Lazy<CancellationTokenSource> _terminateTokenSource = new(() =>
@@ -38,10 +35,7 @@ public static class Env
 
     public static string? workingDirectory { get; set; }
 
-    private static readonly Lazy<IDictionary<string, string>> _envVars = new(() =>
-    {
-        return new Dictionary<string, string>();
-    });
+    private static readonly Lazy<IDictionary<string, string>> _envVars = new(() => new Dictionary<string, string>());
 
     public static IDictionary<string, string> envVars => _envVars.Value;
 
@@ -157,14 +151,14 @@ public static class Env
             {
                 if (!isFirst)
                 {
-                    sbOut.AppendLine();
+                    _ = sbOut.AppendLine();
                 }
                 else
                 {
                     isFirst = false;
                 }
 
-                sbOut.Append(item);
+                _ = sbOut.Append(item);
 
                 if (verbose && !forceSilcent)
                 {
@@ -180,14 +174,14 @@ public static class Env
             {
                 if (!isFirst)
                 {
-                    sbOut.AppendLine();
+                    _ = sbOut.AppendLine();
                 }
                 else
                 {
                     isFirst = false;
                 }
 
-                sbError.Append(item);
+                _ = sbError.Append(item);
 
                 if (verbose && !forceSilcent)
                 {
@@ -240,15 +234,10 @@ public static class Env
         return (sbOut.ToArray(), sbError.ToArray());
     }
 
-    private class ColorScope : IDisposable
+    private class ColorScope(ConsoleColor color) : IDisposable
     {
-        private readonly ConsoleColor color;
+        private readonly ConsoleColor _color = color;
 
-        public ColorScope(ConsoleColor color)
-        {
-            this.color = color;
-        }
-
-        public void Dispose() => Console.ForegroundColor = color;
+        public void Dispose() => Console.ForegroundColor = _color;
     }
 }

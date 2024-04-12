@@ -9,10 +9,7 @@ public static class StringProcessExtensions
 
     public static TaskAwaiter GetAwaiter(this string[] commands)
     {
-        async Task ProcessCommands()
-        {
-            await Task.WhenAll(commands.Select(ProcessCommand));
-        }
+        async Task ProcessCommands() => _ = await Task.WhenAll(commands.Select(ProcessCommand));
 
         return ProcessCommands().GetAwaiter();
     }
