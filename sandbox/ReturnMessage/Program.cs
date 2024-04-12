@@ -7,7 +7,7 @@ public class Program : ConsoleAppBase
     private static async Task Main(string[] args) => await Host.CreateDefaultBuilder().RunConsoleAppFrameworkAsync<Program>(args);
 
     [Command("str")]
-    public void StringWrite([Option("m")]string echoMesage, [Option("c")]int repeatCount)
+    public static void StringWrite([Option("m")]string echoMesage, [Option("c")]int repeatCount)
     {
         for (var i = 0; i < repeatCount; i++)
         {
@@ -16,7 +16,7 @@ public class Program : ConsoleAppBase
     }
 
     [Command("bin")]
-    public async Task BinaryWrite([Option("s")]int writeSize, [Option("c")]int repeatCount, [Option("w")]int waitMilliseconds)
+    public static async Task BinaryWrite([Option("s")]int writeSize, [Option("c")]int repeatCount, [Option("w")]int waitMilliseconds)
     {
         var stdOut = Console.OpenStandardOutput();
         for (var i = 0; i < repeatCount; i++)
