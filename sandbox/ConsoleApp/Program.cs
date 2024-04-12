@@ -1,12 +1,6 @@
-﻿
+﻿// ProcessX and C# 9.0 Top level statement; like google/zx.
 
-
-// ProcessX and C# 9.0 Top level statement; like google/zx.
-
-using Cysharp.Diagnostics;
-using System.Runtime.CompilerServices;
 using Zx;
-using static Zx.Env;
 
 await "dotnet add --help";
 
@@ -54,9 +48,3 @@ await "dotnet add --help";
 
 
 //await ignore(run($"dotnet noinfo"));
-
-
-
-
-
-
