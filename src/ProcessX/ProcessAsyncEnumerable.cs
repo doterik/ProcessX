@@ -1,18 +1,18 @@
-﻿using System.Diagnostics;
+﻿#pragma warning disable CS1591  // Missing XML comment for publicly visible type or member.
+#pragma warning disable IDE1006 // Naming Styles.
+#pragma warning disable SA1312  // Variable names should begin with lower-case letter.
+#pragma warning disable SA1611  // Element parameters should be documented.
+#pragma warning disable SA1615  // Element return value should be documented.
+
+using System.Diagnostics;
 using System.Threading.Channels;
 
 namespace Cysharp.Diagnostics;
 
-public class ProcessAsyncEnumerable : IAsyncEnumerable<string>
+public class ProcessAsyncEnumerable(Process? process, ChannelReader<string> channel) : IAsyncEnumerable<string>
 {
-    private readonly Process? process;
-    private readonly ChannelReader<string> channel;
-
-    internal ProcessAsyncEnumerable(Process? process, ChannelReader<string> channel)
-    {
-        this.process = process;
-        this.channel = channel;
-    }
+    private readonly Process? process = process;
+    private readonly ChannelReader<string> channel = channel;
 
     public IAsyncEnumerator<string> GetAsyncEnumerator(CancellationToken cancellationToken = default) => new ProcessAsyncEnumerator(process, channel, cancellationToken);
 

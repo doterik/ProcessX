@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿#pragma warning disable MA0004 // Use Task.ConfigureAwait.
+
+using Microsoft.Extensions.Hosting;
 
 namespace ReturnMessage;
 
@@ -18,7 +20,7 @@ public class Program : ConsoleAppBase
     [Command("bin")]
     public static async Task BinaryWrite([Option("s")]int writeSize, [Option("c")]int repeatCount, [Option("w")]int waitMilliseconds)
     {
-        var stdOut = Console.OpenStandardOutput();
+        await using var stdOut = Console.OpenStandardOutput();
         for (var i = 0; i < repeatCount; i++)
         {
             var bin = new byte[writeSize];
