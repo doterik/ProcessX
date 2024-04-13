@@ -1,26 +1,25 @@
-﻿namespace Zx;
+﻿using System.Globalization;
+
+namespace Zx;
 
 internal static class EscapeFormattableString
 {
     internal static string Escape(FormattableString formattableString)
     {
-        // already escaped.
-        if (formattableString.Format.StartsWith('"') && formattableString.Format.EndsWith('"'))
+        // Not already escaped?
+        if (!(formattableString.Format.StartsWith('"') && formattableString.Format.EndsWith('"')))
         {
-            return formattableString.ToString();
-        }
+            var args = formattableString.GetArguments(); // Returns inner object[] field, it can modify.
 
-        // GetArguments returns inner object[] field, it can modify.
-        var args = formattableString.GetArguments();
-
-        for (var i = 0; i < args.Length; i++)
-        {
-            if (args[i] is string)
+            for (var i = 0; i < args.Length; i++)
             {
-                args[i] = "\"" + args[i].ToString().Replace("\"", "\\\"") + "\""; // poor logic
+                if (args[i] is string s)
+                {
+                    args[i] = $@"""{s.Replace(@"""", @"\""", StringComparison.Ordinal)}"""; // Poor logic...
+                }
             }
         }
 
-        return formattableString.ToString();
+        return formattableString.ToString(CultureInfo.InvariantCulture);
     }
 }

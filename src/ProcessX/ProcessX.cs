@@ -1,4 +1,14 @@
-﻿using System.Diagnostics;
+﻿#pragma warning disable S3168  // "async" methods should not return "void".
+#pragma warning disable S2930  // "IDisposables" should be disposed.
+#pragma warning disable MA0051  // Method is too long.
+#pragma warning disable CA1307  // Specify StringComparison for clarity.
+#pragma warning disable MA0001  // StringComparison is missing.
+#pragma warning disable CA2000  // Dispose objects before losing scope.
+#pragma warning disable CS1591  // Missing XML comment for publicly visible type or member.
+#pragma warning disable MA0004  // Use Task.ConfigureAwait.
+#pragma warning disable S3358   // Ternary operators should not be nested.
+
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Channels;
 
@@ -10,24 +20,15 @@ public static class ProcessX
 
     private static bool IsInvalidExitCode(Process process) => !AcceptableExitCodes.Any(x => x == process.ExitCode);
 
-    private static (string fileName, string? arguments) ParseCommand(string command)
+    private static (string FileName, string? Arguments) ParseCommand(string command)
     {
         var cmdBegin = command.IndexOf(' ');
-        if (cmdBegin == -1)
-        {
-            return (command, null);
-        }
-        else
-        {
-            var fileName = command[..cmdBegin];
-            var arguments = command[(cmdBegin + 1)..];
-            return (fileName, arguments);
-        }
+        return cmdBegin == -1 ? (command, null) : (command[..cmdBegin], command[(cmdBegin + 1)..]);
     }
 
     private static Process SetupRedirectableProcess(ref ProcessStartInfo processStartInfo, bool redirectStandardInput)
     {
-        // override setings.
+        // Override setings.
         processStartInfo.UseShellExecute = false;
         processStartInfo.CreateNoWindow = true;
         processStartInfo.ErrorDialog = false;
@@ -35,13 +36,11 @@ public static class ProcessX
         processStartInfo.RedirectStandardOutput = true;
         processStartInfo.RedirectStandardInput = redirectStandardInput;
 
-        var process = new Process()
+        return new Process()
         {
             StartInfo = processStartInfo,
             EnableRaisingEvents = true,
         };
-
-        return process;
     }
 
     public static ProcessAsyncEnumerable StartAsync(string command, string? workingDirectory = null, IDictionary<string, string>? environmentVariable = null, Encoding? encoding = null)
@@ -58,10 +57,7 @@ public static class ProcessX
             Arguments = arguments,
         };
 
-        if (workingDirectory is not null)
-        {
-            pi.WorkingDirectory = workingDirectory;
-        }
+        if (workingDirectory is not null) pi.WorkingDirectory = workingDirectory;
 
         if (environmentVariable is not null)
         {
@@ -137,7 +133,7 @@ public static class ProcessX
 
         if (!process.Start())
         {
-            throw new InvalidOperationException("Can't start process. FileName:" + processStartInfo.FileName + ", Arguments:" + processStartInfo.Arguments);
+            throw new InvalidOperationException($"Can't start process. FileName:{processStartInfo.FileName}, Arguments:{processStartInfo.Arguments}");
         }
 
         process.BeginOutputReadLine();
@@ -160,10 +156,7 @@ public static class ProcessX
             Arguments = arguments,
         };
 
-        if (workingDirectory is not null)
-        {
-            pi.WorkingDirectory = workingDirectory;
-        }
+        if (workingDirectory is not null) pi.WorkingDirectory = workingDirectory;
 
         if (environmentVariable is not null)
         {
@@ -225,13 +218,13 @@ public static class ProcessX
 
         if (!process.Start())
         {
-            throw new InvalidOperationException("Can't start process. FileName:" + processStartInfo.FileName + ", Arguments:" + processStartInfo.Arguments);
+            throw new InvalidOperationException($"Can't start process. FileName:{processStartInfo.FileName}, Arguments:{processStartInfo.Arguments}");
         }
 
         process.BeginOutputReadLine();
         process.BeginErrorReadLine();
 
-        // error itertor does not handle process itself.
+        // Error itertor does not handle process itself.
         return (process, new ProcessAsyncEnumerable(process, outputChannel.Reader), new ProcessAsyncEnumerable(process: null, errorChannel.Reader));
     }
 
@@ -251,10 +244,7 @@ public static class ProcessX
             Arguments = arguments,
         };
 
-        if (workingDirectory is not null)
-        {
-            pi.WorkingDirectory = workingDirectory;
-        }
+        if (workingDirectory is not null) pi.WorkingDirectory = workingDirectory;
 
         if (environmentVariable is not null)
         {
@@ -320,7 +310,7 @@ public static class ProcessX
 
         if (!process.Start())
         {
-            throw new InvalidOperationException("Can't start process. FileName:" + processStartInfo.FileName + ", Arguments:" + processStartInfo.Arguments);
+            throw new InvalidOperationException($"Can't start process. FileName:{processStartInfo.FileName}, Arguments:{processStartInfo.Arguments}");
         }
 
         RunAsyncReadFully(process.StandardOutput.BaseStream, readTask, cts.Token);

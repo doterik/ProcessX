@@ -1,9 +1,14 @@
-﻿using System.Diagnostics;
+﻿#pragma warning disable CA2012  // Use ValueTasks correctly.
+#pragma warning disable CS8603  // Possible null reference return.
+#pragma warning disable IDE1006 // Naming Styles.
+#pragma warning disable MA0042  // Do not use blocking calls in an async method.
+
+using System.Diagnostics;
 using System.Threading.Channels;
 
 namespace Cysharp.Diagnostics;
 
-internal class ProcessAsyncEnumerator : IAsyncEnumerator<string>
+internal sealed class ProcessAsyncEnumerator : IAsyncEnumerator<string>
 {
     private readonly Process? process;
     private readonly ChannelReader<string> channel;
@@ -14,7 +19,7 @@ internal class ProcessAsyncEnumerator : IAsyncEnumerator<string>
 
     public ProcessAsyncEnumerator(Process? process, ChannelReader<string> channel, CancellationToken cancellationToken)
     {
-        // process is not null, kill when canceled.
+        // Process is not null, kill when canceled.
         this.process = process;
         this.channel = channel;
         this.cancellationToken = cancellationToken;
@@ -24,10 +29,7 @@ internal class ProcessAsyncEnumerator : IAsyncEnumerator<string>
         }
     }
 
-#pragma warning disable CS8603
-    // when call after MoveNext, current always not null.
-    public string Current => current;
-#pragma warning restore CS8603
+    public string Current => current; // When call after MoveNext, current always not null.
 
     public async ValueTask<bool> MoveNextAsync() =>
         channel.TryRead(out current) ||
@@ -44,16 +46,10 @@ internal class ProcessAsyncEnumerator : IAsyncEnumerator<string>
                 if (process is not null)
                 {
                     process.EnableRaisingEvents = false;
-                    if (!process.HasExited)
-                    {
-                        process.Kill();
-                    }
+                    if (!process.HasExited) process.Kill();
                 }
             }
-            finally
-            {
-                process?.Dispose();
-            }
+            finally { process?.Dispose(); }
         }
 
         return default;

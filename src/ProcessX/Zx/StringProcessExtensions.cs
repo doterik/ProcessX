@@ -1,4 +1,12 @@
-﻿using System.Runtime.CompilerServices;
+﻿#pragma warning disable CA1310 // Specify StringComparison for correctness.
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member.
+#pragma warning disable MA0004 // Use Task.ConfigureAwait.
+#pragma warning disable MA0009 // Add regex evaluation timeout.
+#pragma warning disable MA0074 // Avoid implicit culture-sensitive methods.
+#pragma warning disable MA0110 // Use the Regex source generator.
+#pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
+
+using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 
 namespace Zx;
@@ -14,7 +22,7 @@ public static class StringProcessExtensions
         return ProcessCommands().GetAwaiter();
     }
 
-    private static Task<string> ProcessCommand(string command) => TryChangeDirectory(command) ? Task.FromResult(string.Empty) : Env.process(command);
+    private static Task<string> ProcessCommand(string command) => TryChangeDirectory(command) ? Task.FromResult(string.Empty) : Env.Process(command);
 
     private static bool TryChangeDirectory(string command)
     {
